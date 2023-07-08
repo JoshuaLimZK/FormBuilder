@@ -8,7 +8,9 @@ class Question:
         
         
 class LongFormQuestion(Question):
-    pass
+    def __init__(self, userUUID, formUUID, selfUUID, questionTitle, isRequired, placeholderText):
+        super().__init__(userUUID, formUUID, selfUUID, questionTitle, isRequired)
+        self.placeholderText = placeholderText
 
 class MultiChoiceQuestion(Question):
     def __init__(self, userUUID, formUUID, selfUUID, questionTitle, isRequired, optionsList):

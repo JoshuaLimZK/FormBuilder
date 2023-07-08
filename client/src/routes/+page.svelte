@@ -4,6 +4,7 @@
     import { onMount } from "svelte";
 
     let dataArray = [];
+    let componentInstances = [];
 
     async function addQuestion() {
         const response = await fetch('http://localhost:6969/createQuestion', {
@@ -12,12 +13,13 @@
         })
         const receivedData = await response.json();
         dataArray = [...dataArray, receivedData["data"]];
+        componentInstances = dataArray.map(datum => ({id: datum[0], data: datum}))
     }
 
-    async function editQuestion() {
+    async function editQuestion(event) {
         const response = await fetch('http://localhost:6969/editQuestion', {
             method: "POST",
-            body: JSON.stringify()
+            body: JSON.stringify({data: event.detail})
         })
     }
 
@@ -29,6 +31,7 @@
         const receivedData = await response.json();
         console.log(receivedData)
         dataArray = receivedData["data"];
+        componentInstances = dataArray.map(datum => ({id: datum[0], data: datum}))
     }
 
     onMount(async () => {
@@ -36,6 +39,7 @@
             let response = await fetch(`http://localhost:6969/getData?form=${"temp"}`);
             const receivedData = await response.json();
             dataArray = receivedData["data"];
+            componentInstances = dataArray.map(datum => ({id: datum[0], data: datum}))
         } catch (err) {
             console.log(err);
         }
@@ -50,14 +54,13 @@
         function OnInput() {
             this.style.height = 0;
             this.style.height = (this.scrollHeight) + "px";
-
-            
         }
+
 
     });
 </script>
 
-<div class="w-screen flex justify-center bg-[#F8F8F8]">
+<div class="w-screen flex justify-center">
     <div class=" w-1/2 flex flex-col">
         <div class="h-[150px]"/>
         <textarea type="text" placeholder="Insert form title" class=" outline-none font-bold text-4xl resize-none h-[41px] mb-5 bg-transparent"/>
@@ -65,8 +68,8 @@
         {#if dataArray === []}
             Loading...
         {:else}
-            {#each dataArray as datum, i}
-                <svelte:component this={LongForm} {datum} on:delete={deleteQuestion}/>
+            {#each componentInstances as instance (instance.id)}
+                <svelte:component this={LongForm} datum={instance.data} on:delete={deleteQuestion} on:edit={editQuestion}/>
             {/each}
         {/if}
         <div class="w-full flex justify-center">
