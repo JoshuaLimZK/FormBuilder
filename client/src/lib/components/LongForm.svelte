@@ -46,5 +46,5 @@
         <input title="Required?" type="checkbox" class="tooltip -translate-x-14 h-9 w-4 outline-none" bind:checked={checkboxValue} on:change={handleCheckboxChange}>
         <textarea type="text" placeholder="Type a question" class=" w-full outline-none text-2xl h-[32px] resize-none bg-transparent mb-4 font-bold -translate-x-[44.203px]" bind:value={titleValue} on:input={handleTitleChange} on:blur={handleInputBlur}/>
     </div>
-    <textarea placeholder="Type placeholder text" class=" outline-none text-n min-h-[120px] w-full resize-none bg-transparent border border-[#D0D0D0] rounded-xl p-3 bg-white shadow-md overflow-y-hidden placeholder-[#D0D0D0]" bind:value={placeholderValue} on:input={handlePlaceholderChange} on:blur={handleInputBlur}/>
+    <textarea placeholder="Type placeholder text" class=" outline-none text-n min-h-[120px] w-full resize-none bg-transparent border border-[#D0D0D0] rounded-xl p-3 bg-white shadow-md hover:shadow-lg overflow-y-hidden placeholder-[#D0D0D0]" bind:value={placeholderValue} on:input={handlePlaceholderChange} on:blur={handleInputBlur}/>
 </div>
