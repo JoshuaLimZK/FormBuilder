@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, beforeUpdate } from "svelte";
     import { page } from "$app/stores";
 
     let unsubscribe;
@@ -100,6 +100,19 @@
             console.log(err);
         }
     }
+
+    beforeUpdate(() => {
+        const tx = document.getElementsByTagName("Textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + tx[i].scrollHeight + "px;");
+            tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+            this.style.height = 0;
+            this.style.height = this.scrollHeight + "px";
+        }
+    });
 </script>
 
 <div class="w-full flex justify-center bg-[#F1F1F1] h-full">
@@ -115,8 +128,8 @@
                 <div class="w-full text-xl mb-20">{descriptionValue}</div>
 
                 {#if dataArray.length === 0 || responseArray.length === 0}
-                    This form has no questions, Please contact the creator of
-                    this form if there are any issues.
+                    This form has no questions or no title, Please contact the
+                    creator of this form if there are any issues.
                 {:else}
                     <div
                         class="text-xl font-bold mb-4 flex flex-row items-center gap-3"

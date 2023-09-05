@@ -1,7 +1,7 @@
 <script>
     import LongForm from "../../../lib/components/LongForm.svelte";
 
-    import { onMount } from "svelte";
+    import { beforeUpdate, onMount } from "svelte";
 
     import { page } from "$app/stores";
 
@@ -98,6 +98,19 @@
             console.log(err);
         }
 
+        const tx = document.getElementsByTagName("Textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + tx[i].scrollHeight + "px;");
+            tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+            this.style.height = 0;
+            this.style.height = this.scrollHeight + "px";
+        }
+    });
+
+    beforeUpdate(() => {
         const tx = document.getElementsByTagName("Textarea");
         for (let i = 0; i < tx.length; i++) {
             tx[i].setAttribute("style", "height:" + tx[i].scrollHeight + "px;");

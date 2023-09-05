@@ -26,6 +26,7 @@
             username = receivedData["data"][0][1];
         } catch (err) {
             console.log(err);
+            window.location.href = "/";
         }
     });
 

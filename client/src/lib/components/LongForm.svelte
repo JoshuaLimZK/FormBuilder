@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -48,6 +48,19 @@
         checkboxValue = event.target.checked ? 1 : 0;
         handleInputBlur();
     }
+
+    onMount(() => {
+        const tx = document.getElementsByTagName("Textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + tx[i].scrollHeight + "px;");
+            tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+            this.style.height = 0;
+            this.style.height = this.scrollHeight + "px";
+        }
+    });
 </script>
 
 <div class=" w-full mt-3 mb-3" id={datum[0]}>
