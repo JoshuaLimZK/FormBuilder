@@ -28,7 +28,7 @@ def getData():
 def getFormInfo():
     formUUID = request.args.get("form")
     connection = sqlite3.connect(dbAddress)
-    cursor = connection.execute(f"SELECT formTitle, formDescription FROM Forms WHERE formUUID = '{formUUID}'")
+    cursor = connection.execute(f"SELECT formTitle, formDescription, userUUID FROM Forms WHERE formUUID = '{formUUID}'")
     rows = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -38,11 +38,13 @@ def getFormInfo():
 def createQuestion():
     formUUID = json.loads(request.data)["formUUID"]
     questionType = json.loads(request.data)["questionType"]
-    
-    newQuestion = LongFormQuestion("temp", formUUID, str(uuid.uuid4()), "", questionType, "")
-    
     connection = sqlite3.connect(dbAddress)
     cursor = connection.cursor()
+    cursor.execute(f"SELECT userUUID FROM Forms WHERE formUUID = ?", [formUUID])
+    userUUID = cursor.fetchall()[0][0]
+    newQuestion = LongFormQuestion(userUUID, formUUID, str(uuid.uuid4()), "", questionType, "")
+    
+    
     cursor.execute("INSERT INTO Questions (questionUUID, formUUID, userUUID, questionTitle, isRequired, questionType, placeholderText) VALUES (?, ?, ?, ?, ?, ?, ?)", (newQuestion.selfUUID, newQuestion.formUUID, newQuestion.userUUID, newQuestion.questionTitle, newQuestion.isRequired, 0, newQuestion.placeholderText))
     connection.commit()
     cursor.close()
@@ -124,3 +126,69 @@ def getUsername():
     cursor.close()
     connection.close()
     return jsonify({"data": rows})
+
+@app.route("/submitResponse", methods=['POST'])
+def submitResponse():
+    responses = json.loads(request.data)["data"]
+    connection = sqlite3.connect(dbAddress)
+    cursor = connection.cursor()
+    for response in responses:
+        cursor.execute("INSERT INTO Responses (responseUUID, formUUID, questionUUID, response) VALUES (?, ?, ?, ?)", (response[0], response[1], response[2], response[3]))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return jsonify({200: "OK"})
+
+@app.route("/newForm", methods=['POST'])
+def newsForm():
+    response = json.loads(request.data)["data"]
+    connection = sqlite3.connect(dbAddress)
+    cursor = connection.cursor()
+    print(response[1])
+    cursor.execute("INSERT INTO Forms (formUUID, userUUID, formTitle, dateCreated, formDescription) VALUES (?, ?, ?, ?, ?)", (response[0], response[1], response[2], response[3], response[4]))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return jsonify({200: "OK"})
+
+@app.route("/signUp", methods=['POST'])
+def signUp():
+    response = json.loads(request.data)["data"]
+    connection = sqlite3.connect(dbAddress)
+    cursor = connection.cursor()
+    
+    cursor.execute(f"SELECT * FROM Users WHERE username = '{response[0]}'")
+    rows = cursor.fetchall()
+
+    if rows == []:    
+        newUUID = uuid.uuid4()
+        cursor.execute("INSERT INTO Authentication VALUES (?, ?)", (str(newUUID), response[1]))
+        cursor.execute("INSERT INTO Users VALUES(?, ?)", (str(newUUID), response[0]))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({200: "OK"})
+    else:
+        return jsonify({"Error": "That Username is Already Taken"})
+    
+@app.route("/login", methods=['POST'])
+def login():
+    response = json.loads(request.data)["data"]
+    connection = sqlite3.connect(dbAddress)
+    cursor = connection.cursor()
+    
+    cursor.execute(f"SELECT * FROM Users WHERE username = '{response[0]}'")
+    try:
+        userUUID = cursor.fetchall()[0][0]
+    except:
+        userUUID = []
+    print(userUUID)
+
+    if userUUID == []:    
+        return jsonify({"Error": "That Username does not Exist"})
+    else:
+        cursor.execute(f"SELECT * FROM Authentication WHERE userUUID = '{userUUID}'")
+        password = cursor.fetchall()[0][1]
+        if response[1] != password:
+            return jsonify({"Error": "Incorrect Password"})
+    return jsonify({"uuid": userUUID}) 
