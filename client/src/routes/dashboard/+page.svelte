@@ -7,7 +7,7 @@
     onMount(async () => {
         let cookies = document.cookie;
         try {
-            let response = await fetch("http://localhost:6969/getForm", {
+            let response = await fetch("http://127.0.0.1:6969/getForm", {
                 method: "POST",
                 body: JSON.stringify({ userID: cookies.split("=")[1] }),
             });
@@ -18,7 +18,7 @@
         }
 
         try {
-            let response = await fetch("http://localhost:6969/getUsername", {
+            let response = await fetch("http://127.0.0.1:6969/getUsername", {
                 method: "POST",
                 body: JSON.stringify({ userID: cookies.split("=")[1] }),
             });
@@ -39,7 +39,7 @@
         let newUUID = crypto.randomUUID();
         let newDate = new Date().toLocaleDateString("en-GB");
         try {
-            await fetch("http://localhost:6969/newForm", {
+            await fetch("http://127.0.0.1:6969/newForm", {
                 method: "POST",
                 body: JSON.stringify({
                     data: [newUUID, cookies.split("=")[1], "", newDate, ""],

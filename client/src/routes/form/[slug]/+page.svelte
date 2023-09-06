@@ -24,7 +24,7 @@
     onMount(async () => {
         try {
             let response = await fetch(
-                `http://localhost:6969/getData?form=${slug}`
+                `http://127.0.0.1:6969/getData?form=${slug}`
             );
             const receivedData = await response.json();
             dataArray = receivedData["data"];
@@ -35,7 +35,7 @@
 
         try {
             let response = await fetch(
-                `http://localhost:6969/getFormInfo?form=${slug}`
+                `http://127.0.0.1:6969/getFormInfo?form=${slug}`
             );
             const receivedData = await response.json();
             titleValue = receivedData["data"][0][0];
@@ -85,7 +85,7 @@
         }
 
         try {
-            fetch("http://localhost:6969/submitResponse", {
+            fetch("http://127.0.0.1:6969/submitResponse", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -2,7 +2,7 @@
     let username;
     let password;
     async function submit() {
-        const response = await fetch("http://localhost:6969/login", {
+        const response = await fetch("http://127.0.0.1:6969/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

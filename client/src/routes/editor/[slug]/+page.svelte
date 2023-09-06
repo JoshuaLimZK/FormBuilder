@@ -22,7 +22,7 @@
     let componentInstances = [];
 
     async function addQuestion() {
-        const response = await fetch("http://localhost:6969/createQuestion", {
+        const response = await fetch("http://127.0.0.1:6969/createQuestion", {
             method: "POST",
             body: JSON.stringify({ formUUID: slug, questionType: 0 }),
         });
@@ -35,14 +35,14 @@
     }
 
     async function editQuestion(event) {
-        const response = await fetch("http://localhost:6969/editQuestion", {
+        const response = await fetch("http://127.0.0.1:6969/editQuestion", {
             method: "POST",
             body: JSON.stringify({ data: event.detail }),
         });
     }
 
     async function editFormInfo(event) {
-        const response = await fetch("http://localhost:6969/editFormInfo", {
+        const response = await fetch("http://127.0.0.1:6969/editFormInfo", {
             method: "POST",
             body: JSON.stringify({
                 data: [titleValue, descriptionValue, slug],
@@ -51,7 +51,7 @@
     }
 
     async function deleteQuestion(event) {
-        const response = await fetch("http://localhost:6969/deleteQuestion", {
+        const response = await fetch("http://127.0.0.1:6969/deleteQuestion", {
             method: "POST",
             body: JSON.stringify({ questionID: event.detail, formID: slug }),
         });
@@ -71,7 +71,7 @@
         cookies = document.cookie;
         try {
             let response = await fetch(
-                `http://localhost:6969/getData?form=${slug}`
+                `http://127.0.0.1:6969/getData?form=${slug}`
             );
             const receivedData = await response.json();
             dataArray = receivedData["data"];
@@ -85,7 +85,7 @@
 
         try {
             let response = await fetch(
-                `http://localhost:6969/getFormInfo?form=${slug}`
+                `http://127.0.0.1:6969/getFormInfo?form=${slug}`
             );
             const receivedData = await response.json();
 
